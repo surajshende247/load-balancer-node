@@ -1,4 +1,4 @@
-import express from "express";
+import express, {Request, Response} from "express";
 import createServer from "./server";
 
 const mainServer = express();
@@ -34,7 +34,7 @@ const servers:any = SERVERS_CONFIG.map((serverConfig) => {
 
 let requestCount = 0;
 
-mainServer.use((req, res) => {
+mainServer.use((req: Request, res: Response) => {
   console.info(`Request received: ${req.method} ${req.url}`);
   requestCount = (requestCount + 1) % servers.length;
   console.log(`Request sent to ${SERVERS_CONFIG[requestCount].name}`);
