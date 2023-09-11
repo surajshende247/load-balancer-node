@@ -1,4 +1,4 @@
-import express, {Request, Response} from "express";
+import express, { Request, Response } from "express";
 import createServer from "./server";
 
 const mainServer = express();
@@ -31,6 +31,22 @@ const SERVERS_CONFIG = [
 const servers:any = SERVERS_CONFIG.map((serverConfig) => {
   return createServer(serverConfig.port, serverConfig.name);
 });
+
+mainServer.get("/stats", (req: Request, res: Response) => {
+  res.json(SERVERS_CONFIG);
+});
+
+// ignore favicon requests
+mainServer.get("/favicon.ico", (req: Request, res: Response) => {
+  res.status(204);
+});
+
+/*
+  ### Core logic of the load balancer:
+  1. Keep track of the number of requests sent to main server.
+  2. Find the next server using the round robin.
+  3. Send the request to the next server.
+*/
 
 let requestCount = 0;
 
